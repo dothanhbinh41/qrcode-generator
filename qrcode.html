@@ -1,0 +1,51 @@
+<html>
+  <input type="text" id="qrInput" placeholder="Nhập nội dung cho QR Code" />
+
+  <!-- Nút để tạo QR Code -->
+  <button onclick="generateQRCode()">Tạo QR Code</button>
+  <div style="margin-top: 20px" id="qrcode"></div>
+
+  <button style="margin-top: 20px;display: none" id="downloadBtn"  >Tải xuống QR Code</button>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <script>
+    function generateQRCode() {
+      var qrText = document.getElementById("qrInput").value;
+
+      // Kiểm tra xem QR Code đã được tạo chưa và xóa nếu có
+      var qrContainer = document.getElementById("qrcode");
+      qrContainer.innerHTML = ""; // Xóa QR Code cũ nếu có
+
+      // Tạo QR Code mới
+      var qrcode = new QRCode(qrContainer, {
+        text: qrText,
+        width: 512,
+        height: 512,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H,
+        typeNumber: 5
+      });
+
+      // Hiển thị nút download
+      document.getElementById("downloadBtn").style.display = "block";
+
+      // Thêm sự kiện click vào nút download
+      document.getElementById("downloadBtn").onclick = function () {
+        downloadQRCode();
+      };
+    }
+
+    function downloadQRCode() {
+      var qrImage = document.querySelector("#qrcode img"); // Truy cập vào thẻ img của QR Code
+      var imageUrl = qrImage.src; // Lấy URL của ảnh QR Code
+
+      // Tạo một thẻ anchor để tải xuống
+      var anchor = document.createElement("a");
+      anchor.href = imageUrl;
+      anchor.download = "QRCode.png"; // Thiết lập tên file cho ảnh tải xuống
+      document.body.appendChild(anchor); // Thêm thẻ anchor vào body
+      anchor.click(); // Gọi sự kiện click để tải xuống
+      document.body.removeChild(anchor); // Xóa thẻ anchor sau khi tải xuống
+    }
+  </script>
+</html>
