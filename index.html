@@ -1,51 +1,69 @@
+<!DOCTYPE html>
 <html>
-  <input type="text" id="qrInput" placeholder="Nhập nội dung cho QR Code" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />  
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  </head>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+    <script>
+      function generateQRCode() {
+        var qrText = document.getElementById("qrInput").value;
 
-  <!-- Nút để tạo QR Code -->
-  <button onclick="generateQRCode()">Tạo QR Code</button>
-  <div style="margin-top: 20px" id="qrcode"></div>
+        // Kiểm tra xem QR Code đã được tạo chưa và xóa nếu có
+        var qrContainer = document.getElementById("qrcode");
+        qrContainer.innerHTML = ""; // Xóa QR Code cũ nếu có
 
-  <button style="margin-top: 20px;display: none" id="downloadBtn"  >Tải xuống QR Code</button>
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-  <script>
-    function generateQRCode() {
-      var qrText = document.getElementById("qrInput").value;
+        // Tạo QR Code mới
+        var qrcode = new QRCode(qrContainer, {
+          text: qrText,
+          width: 512,
+          height: 512,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H,
+          typeNumber: 5,
+        });
 
-      // Kiểm tra xem QR Code đã được tạo chưa và xóa nếu có
-      var qrContainer = document.getElementById("qrcode");
-      qrContainer.innerHTML = ""; // Xóa QR Code cũ nếu có
+        // Hiển thị nút download
+        document.getElementById("downloadBtn").style.display = "block";
+      }
 
-      // Tạo QR Code mới
-      var qrcode = new QRCode(qrContainer, {
-        text: qrText,
-        width: 512,
-        height: 512,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H,
-        typeNumber: 5
+      function downloadQRCode() {
+        var qrImage = document.querySelector("#qrcode img"); // Truy cập vào thẻ img của QR Code
+        var imageUrl = qrImage.src; // Lấy URL của ảnh QR Code
+
+        // Tạo một thẻ anchor để tải xuống
+        var anchor = document.createElement("a");
+        anchor.href = imageUrl;
+        anchor.download = "QRCode.png"; // Thiết lập tên file cho ảnh tải xuống
+        document.body.appendChild(anchor); // Thêm thẻ anchor vào body
+        anchor.click(); // Gọi sự kiện click để tải xuống
+        document.body.removeChild(anchor); // Xóa thẻ anchor sau khi tải xuống
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        var generateButton = document.getElementById("generateButton");
+        generateButton.onclick = generateQRCode; // Gán hàm khi nút được nhấn
+
+        var downloadButton = document.getElementById("downloadBtn");
+        downloadButton.onclick = downloadQRCode; // Gán hàm khi nút tải xuống được nhấn
       });
-
-      // Hiển thị nút download
-      document.getElementById("downloadBtn").style.display = "block";
-
-      // Thêm sự kiện click vào nút download
-      document.getElementById("downloadBtn").onclick = function () {
-        downloadQRCode();
-      };
-    }
-
-    function downloadQRCode() {
-      var qrImage = document.querySelector("#qrcode img"); // Truy cập vào thẻ img của QR Code
-      var imageUrl = qrImage.src; // Lấy URL của ảnh QR Code
-
-      // Tạo một thẻ anchor để tải xuống
-      var anchor = document.createElement("a");
-      anchor.href = imageUrl;
-      anchor.download = "QRCode.png"; // Thiết lập tên file cho ảnh tải xuống
-      document.body.appendChild(anchor); // Thêm thẻ anchor vào body
-      anchor.click(); // Gọi sự kiện click để tải xuống
-      document.body.removeChild(anchor); // Xóa thẻ anchor sau khi tải xuống
-    }
-  </script>
+    </script>
+  </head>
+  <body>
+    <div class="container p-2">
+      <div class="row">
+        <div class="col">
+          <input type="text" class="form-control col-6" id="qrInput" placeholder="Nhập nội dung cho QR Code" /> 
+        </div>
+        <div class="col d-flex flex-row">
+          <button type="button" class="btn btn-primary" id="generateButton">Tạo QR Code</button> 
+          <button type="button" class="btn btn-success ms-2" style="display: none" id="downloadBtn">Tải xuống QR Code</button>
+        </div>
+      </div> 
+      <div class="mt-2" id="qrcode"></div> 
+    </div>
+  </body>
 </html>
